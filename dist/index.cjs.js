@@ -2,10 +2,10 @@
 
 var a$6 = require('react');
 
-var TableColumn = function (
+const TableColumn = (
 // We'll see how to refactor this unused component
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-_props) {
+_props) => {
     return null;
 };
 
@@ -226,17 +226,6 @@ PERFORMANCE OF THIS SOFTWARE.
 /* global Reflect, Promise, SuppressedError, Symbol, Iterator */
 
 
-var __assign = function() {
-    __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-
 function __rest(s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -249,67 +238,72 @@ function __rest(s, e) {
     return t;
 }
 
-function __spreadArray(to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-}
-
 typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
 
-var Table = a$6.forwardRef(function (_a, ref) {
-    var className = _a.className, props = __rest(_a, ["className"]);
+const Table = a$6.forwardRef((_a, ref) => {
+    var { className } = _a, props = __rest(_a, ["className"]);
     return (a$6.createElement("div", { className: "duma-table__table-wrapper" },
-        a$6.createElement("table", __assign({ ref: ref, className: "duma-table__table ".concat(className) }, props))));
+        a$6.createElement("table", Object.assign({ ref: ref, className: `duma-table__table ${className}` }, props))));
 });
 
-var TableHead = a$6.forwardRef(function (_a, ref) {
-    var className = _a.className, props = __rest(_a, ["className"]);
-    return (a$6.createElement("thead", __assign({ ref: ref, className: "duma-table__head ".concat(className) }, props)));
+const TableHead = a$6.forwardRef((_a, ref) => {
+    var { className } = _a, props = __rest(_a, ["className"]);
+    return (a$6.createElement("thead", Object.assign({ ref: ref, className: `duma-table__head ${className}` }, props)));
 });
 
-var TableRow = a$6.forwardRef(function (_a, ref) {
-    var className = _a.className, props = __rest(_a, ["className"]);
-    return (a$6.createElement("tr", __assign({ ref: ref, className: "duma-table__row ".concat(className) }, props)));
+const TableRow = a$6.forwardRef((_a, ref) => {
+    var { className } = _a, props = __rest(_a, ["className"]);
+    return (a$6.createElement("tr", Object.assign({ ref: ref, className: `duma-table__row ${className}` }, props)));
 });
 
-var TableHeaderCell = a$6.forwardRef(function (_a, ref) {
-    var className = _a.className, props = __rest(_a, ["className"]);
-    return (a$6.createElement("th", __assign({ ref: ref, className: "duma-table__header-cell ".concat(className) }, props)));
+const TableHeaderCell = a$6.forwardRef((_a, ref) => {
+    var { className } = _a, props = __rest(_a, ["className"]);
+    return (a$6.createElement("th", Object.assign({ ref: ref, className: `duma-table__header-cell ${className}` }, props)));
 });
 
-var TableBody = a$6.forwardRef(function (_a, ref) {
-    var className = _a.className, props = __rest(_a, ["className"]);
-    return (a$6.createElement("tbody", __assign({ ref: ref, className: "duma-table__body ".concat(className) }, props)));
+const TableBody = a$6.forwardRef((_a, ref) => {
+    var { className } = _a, props = __rest(_a, ["className"]);
+    return (a$6.createElement("tbody", Object.assign({ ref: ref, className: `duma-table__body ${className}` }, props)));
 });
 
-var TableDataCell = a$6.forwardRef(function (_a, ref) {
-    var className = _a.className, props = __rest(_a, ["className"]);
-    return (a$6.createElement("td", __assign({ ref: ref, className: "duma-table__data-cell ".concat(className) }, props)));
+const TableDataCell = a$6.forwardRef((_a, ref) => {
+    var { className } = _a, props = __rest(_a, ["className"]);
+    return (a$6.createElement("td", Object.assign({ ref: ref, className: `duma-table__data-cell ${className}` }, props)));
 });
 
-var useRowSelection = function (data, localSelectedRows, setLocalSelectedRows, onRowSelectionChange) {
-    var handleSelectAllRows = a$6.useCallback(function (e) {
-        var allSelected = e.target.checked;
-        var updatedSelectedRows = allSelected ? data : [];
-        setLocalSelectedRows(updatedSelectedRows);
-        onRowSelectionChange === null || onRowSelectionChange === void 0 ? void 0 : onRowSelectionChange(updatedSelectedRows);
-    }, [data, setLocalSelectedRows, onRowSelectionChange]);
-    var handleRowSelection = a$6.useCallback(function (e, rowIndex) {
-        var row = data[rowIndex];
-        var updatedSelectedRows = e.target.checked
-            ? __spreadArray(__spreadArray([], localSelectedRows, true), [row], false) : localSelectedRows.filter(function (selectedRow) { return selectedRow !== row; });
+const useRowSelection = (data, // Current data for the page
+localSelectedRows, // All selected rows across pages
+setLocalSelectedRows, onRowSelectionChange) => {
+    // Memoized to check if all rows on the current page are selected
+    const isAllRowsSelectedOnPage = a$6.useMemo(() => {
+        return data.length > 0 && data.every(row => localSelectedRows.includes(row));
+    }, [data, localSelectedRows]);
+    // Select or deselect all rows on the current page
+    const handleSelectAllRows = a$6.useCallback((e) => {
+        const allSelected = e.target.checked;
+        const updatedSelectedRows = allSelected
+            ? [...new Set([...localSelectedRows, ...data])] // Select all rows on current page
+            : localSelectedRows.filter(selectedRow => !data.includes(selectedRow)); // Deselect all rows on current page
         setLocalSelectedRows(updatedSelectedRows);
         onRowSelectionChange === null || onRowSelectionChange === void 0 ? void 0 : onRowSelectionChange(updatedSelectedRows);
     }, [data, localSelectedRows, setLocalSelectedRows, onRowSelectionChange]);
-    return { handleSelectAllRows: handleSelectAllRows, handleRowSelection: handleRowSelection };
+    // Select or deselect individual row
+    const handleRowSelection = a$6.useCallback((e, rowIndex) => {
+        const row = data[rowIndex];
+        const updatedSelectedRows = e.target.checked
+            ? [...localSelectedRows, row] // Add row to selection
+            : localSelectedRows.filter((selectedRow) => selectedRow !== row); // Remove row from selection
+        setLocalSelectedRows(updatedSelectedRows);
+        onRowSelectionChange === null || onRowSelectionChange === void 0 ? void 0 : onRowSelectionChange(updatedSelectedRows);
+    }, [data, localSelectedRows, setLocalSelectedRows, onRowSelectionChange]);
+    return {
+        handleSelectAllRows,
+        handleRowSelection,
+        isAllRowsSelectedOnPage // This can be used to control the state of the header checkbox
+    };
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -317,25 +311,25 @@ function castToString(value) {
     return value;
 }
 
-var useTableSorting = function (sort, onSortChange) {
-    var handleSortChange = a$6.useCallback(function (name) {
-        var currentSortField = castToString(sort).split(" ")[0];
-        var currentSortOrder = castToString(sort).split(" ")[1];
-        var newSortOrder = currentSortField === name && currentSortOrder === "asc"
+const useTableSorting = (sort, onSortChange) => {
+    const handleSortChange = a$6.useCallback((name) => {
+        const currentSortField = castToString(sort).split(" ")[0];
+        const currentSortOrder = castToString(sort).split(" ")[1];
+        const newSortOrder = currentSortField === name && currentSortOrder === "asc"
             ? "desc"
             : "asc";
-        onSortChange === null || onSortChange === void 0 ? void 0 : onSortChange("".concat(name, " ").concat(newSortOrder));
+        onSortChange === null || onSortChange === void 0 ? void 0 : onSortChange(`${name} ${newSortOrder}`);
     }, [sort, onSortChange]);
-    var sortedBy = castToString(sort).split(" ")[0];
-    var sortOrder = castToString(sort).split(" ")[1];
-    return { handleSortChange: handleSortChange, sortedBy: sortedBy, sortOrder: sortOrder };
+    const sortedBy = castToString(sort).split(" ")[0];
+    const sortOrder = castToString(sort).split(" ")[1];
+    return { handleSortChange, sortedBy, sortOrder };
 };
 
-var useExpandableRows = function () {
-    var _a = a$6.useState(new Set()), expandedRows = _a[0], setExpandedRows = _a[1];
-    var toggleExpandRow = a$6.useCallback(function (rowIndex) {
-        setExpandedRows(function (prevExpandedRows) {
-            var newExpandedRows = new Set(prevExpandedRows);
+const useExpandableRows = () => {
+    const [expandedRows, setExpandedRows] = a$6.useState(new Set());
+    const toggleExpandRow = a$6.useCallback((rowIndex) => {
+        setExpandedRows((prevExpandedRows) => {
+            const newExpandedRows = new Set(prevExpandedRows);
             if (newExpandedRows.has(rowIndex)) {
                 newExpandedRows.delete(rowIndex);
             }
@@ -345,39 +339,40 @@ var useExpandableRows = function () {
             return newExpandedRows;
         });
     }, []);
-    return { expandedRows: expandedRows, toggleExpandRow: toggleExpandRow };
+    return { expandedRows, toggleExpandRow };
 };
 
-function useTableColumns(_a) {
-    var children = _a.children, hasIndexColumn = _a.hasIndexColumn, data = _a.data, localSelectedRows = _a.localSelectedRows, handleSelectAllRows = _a.handleSelectAllRows, handleRowSelection = _a.handleRowSelection, onRowSelectionChange = _a.onRowSelectionChange;
-    var childArray = a$6.Children.toArray(children);
-    return a$6.useMemo(function () {
-        var baseColumns = childArray.filter(a$6.isValidElement);
+function useTableColumns({ children, hasIndexColumn, data, localSelectedRows, handleSelectAllRows, handleRowSelection, onRowSelectionChange, }) {
+    const childArray = a$6.Children.toArray(children);
+    return a$6.useMemo(() => {
+        let baseColumns = childArray.filter(a$6.isValidElement);
         if (hasIndexColumn) {
-            baseColumns = __spreadArray([
+            baseColumns = [
                 {
                     props: {
                         name: "index",
                         label: "#",
                         width: 50,
-                        render: function (index) { return index + 1; },
-                        valueSelector: function () { return undefined; },
+                        render: (index) => index + 1,
+                        valueSelector: () => undefined,
                     },
-                }
-            ], baseColumns, true);
+                },
+                ...baseColumns,
+            ];
         }
         if (onRowSelectionChange) {
-            baseColumns = __spreadArray([
+            baseColumns = [
                 {
                     props: {
                         name: "checkbox",
                         width: 50,
                         label: (a$6.createElement("input", { type: "checkbox", checked: localSelectedRows.length === data.length, onChange: handleSelectAllRows })),
-                        render: function (rowIndex) { return (a$6.createElement("input", { type: "checkbox", checked: localSelectedRows.includes(data[rowIndex]), onClick: function (e) { return e.stopPropagation(); }, onChange: function (e) { return handleRowSelection(e, rowIndex); } })); },
-                        valueSelector: function () { return undefined; },
+                        render: (rowIndex) => (a$6.createElement("input", { type: "checkbox", checked: localSelectedRows.includes(data[rowIndex]), onClick: (e) => e.stopPropagation(), onChange: (e) => handleRowSelection(e, rowIndex) })),
+                        valueSelector: () => undefined,
                     },
-                }
-            ], baseColumns, true);
+                },
+                ...baseColumns,
+            ];
         }
         return baseColumns;
     }, [
@@ -389,34 +384,34 @@ function useTableColumns(_a) {
     ]);
 }
 
-var useContextMenu = function () {
-    var _a = a$6.useState({
+const useContextMenu = () => {
+    const [contextMenu, setContextMenu] = a$6.useState({
         data: null,
         position: null,
-    }), contextMenu = _a[0], setContextMenu = _a[1];
-    var menuRef = a$6.useRef(null);
-    var openContextMenu = function (e, rowData) {
+    });
+    const menuRef = a$6.useRef(null);
+    const openContextMenu = (e, rowData) => {
         e.preventDefault();
-        var clickX = e.clientX;
-        var clickY = e.clientY;
-        var screenWidth = window.innerWidth;
-        var screenHeight = window.innerHeight;
+        const clickX = e.clientX;
+        const clickY = e.clientY;
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
         // Prvo postavimo meni na inicijalnu poziciju
         setContextMenu({
             data: rowData,
             position: { x: clickX, y: clickY },
         });
         // Kada se meni renderuje, izračunaj tačnu poziciju
-        setTimeout(function () {
+        setTimeout(() => {
             if (menuRef.current) {
-                var menuWidth = menuRef.current.offsetWidth;
-                var menuHeight = menuRef.current.offsetHeight;
+                const menuWidth = menuRef.current.offsetWidth;
+                const menuHeight = menuRef.current.offsetHeight;
                 // Ako nema dovoljno prostora desno, pomeri meni levo
-                var positionX = clickX + menuWidth > screenWidth
+                const positionX = clickX + menuWidth > screenWidth
                     ? clickX - menuWidth
                     : clickX;
                 // Ako nema dovoljno prostora dole, pomeri meni gore
-                var positionY = clickY + menuHeight > screenHeight
+                const positionY = clickY + menuHeight > screenHeight
                     ? clickY - menuHeight
                     : clickY;
                 // Ažuriraj poziciju menija sa tačnim koordinatama
@@ -427,116 +422,110 @@ var useContextMenu = function () {
             }
         }, 0); // Ovo osigurava da ref postane dostupan pre kalkulacija
     };
-    var closeContextMenu = function () {
+    const closeContextMenu = () => {
         setContextMenu({ data: null, position: null });
     };
     // Zatvaranje menija kada se klikne van njega
-    a$6.useEffect(function () {
-        var handleClickOutside = function (event) {
+    a$6.useEffect(() => {
+        const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
                 closeContextMenu();
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
-        return function () {
+        return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
     return {
-        contextMenu: contextMenu,
-        openContextMenu: openContextMenu,
-        closeContextMenu: closeContextMenu,
-        menuRef: menuRef,
+        contextMenu,
+        openContextMenu,
+        closeContextMenu,
+        menuRef, // Ref za kontekst meni
     };
 };
 
-var BaseTable = function (_a) {
-    var _b, _c;
-    var children = _a.children, data = _a.data, sort = _a.sort, hasIndexColumn = _a.hasIndexColumn, tableClassName = _a.tableClassName, tableHeadClassName = _a.tableHeadClassName, tableHeadRowClassName = _a.tableHeadRowClassName, tableBodyClassName = _a.tableBodyClassName, tableBodyRowClassName = _a.tableBodyRowClassName, tableExpandableClassName = _a.tableExpandableClassName, tableIconWrapperClassName = _a.tableIconWrapperClassName, onSortChange = _a.onSortChange, onRowClick = _a.onRowClick, _d = _a.selectedRows, selectedRows = _d === void 0 ? [] : _d, onRowSelectionChange = _a.onRowSelectionChange, expandableContent = _a.expandableContent, rowActions = _a.rowActions, contextComponent = _a.contextComponent;
-    var _e = a$6.useState(selectedRows), localSelectedRows = _e[0], setLocalSelectedRows = _e[1];
-    var _f = useTableSorting(sort, onSortChange), handleSortChange = _f.handleSortChange, sortedBy = _f.sortedBy;
-    var _g = useRowSelection(data, localSelectedRows, setLocalSelectedRows, onRowSelectionChange), handleSelectAllRows = _g.handleSelectAllRows, handleRowSelection = _g.handleRowSelection;
-    var _h = useExpandableRows(), expandedRows = _h.expandedRows, toggleExpandRow = _h.toggleExpandRow;
-    var columns = useTableColumns({
-        children: children,
-        hasIndexColumn: hasIndexColumn,
-        data: data,
-        localSelectedRows: localSelectedRows,
-        handleSelectAllRows: handleSelectAllRows,
-        handleRowSelection: handleRowSelection,
-        onRowSelectionChange: onRowSelectionChange,
+const BaseTable = ({ children, data, sort, hasIndexColumn, tableClassName, tableHeadClassName, tableHeadRowClassName, tableBodyClassName, tableBodyRowClassName, tableExpandableClassName, tableIconWrapperClassName, onSortChange, onRowClick, selectedRows = [], onRowSelectionChange, expandableContent, rowActions, contextComponent, }) => {
+    var _a, _b;
+    const [localSelectedRows, setLocalSelectedRows] = a$6.useState(selectedRows);
+    const { handleSortChange, sortedBy } = useTableSorting(sort, onSortChange);
+    const { handleSelectAllRows, handleRowSelection } = useRowSelection(data, localSelectedRows, setLocalSelectedRows, onRowSelectionChange);
+    const { expandedRows, toggleExpandRow } = useExpandableRows();
+    const columns = useTableColumns({
+        children,
+        hasIndexColumn,
+        data,
+        localSelectedRows,
+        handleSelectAllRows,
+        handleRowSelection,
+        onRowSelectionChange,
     });
-    var _j = useContextMenu(), contextMenu = _j.contextMenu, openContextMenu = _j.openContextMenu, closeContextMenu = _j.closeContextMenu, menuRef = _j.menuRef;
+    const { contextMenu, openContextMenu, closeContextMenu, menuRef } = useContextMenu();
     return (a$6.createElement(a$6.Fragment, null,
-        a$6.createElement(Table, { className: "duma-table__table ".concat(tableClassName) },
+        a$6.createElement(Table, { className: `duma-table__table ${tableClassName}` },
             a$6.createElement(TableHead, { className: tableHeadClassName },
                 a$6.createElement(TableRow, { className: tableHeadRowClassName },
                     expandableContent && (a$6.createElement(TableHeaderCell, { style: { width: 50 } })),
-                    columns.map(function (column, index) { return (a$6.createElement(TableHeaderCell, { key: index, style: {
+                    columns.map((column, index) => (a$6.createElement(TableHeaderCell, { key: index, style: {
                             textAlign: column.props.justify || "left",
                             width: typeof column.props.width === "number"
-                                ? "".concat(column.props.width, "px")
+                                ? `${column.props.width}px`
                                 : "auto",
                         } },
-                        a$6.createElement("div", { onClick: function () {
-                                return column.props.sortable
-                                    ? handleSortChange(column.props.name)
-                                    : undefined;
-                            }, className: "duma-table__head-title ".concat(column.props.sortable
+                        a$6.createElement("div", { onClick: () => column.props.sortable
+                                ? handleSortChange(column.props.name)
+                                : undefined, className: `duma-table__head-title ${column.props.sortable
                                 ? "duma-table__head-title--sortable"
-                                : "") },
+                                : ""}` },
                             column.props.label || column.props.name,
                             column.props.sortable && (a$6.createElement(BaseTable.SortButton, { sorting: (sortedBy === column.props.name
                                     ? castToString(sort).split(" ")[1]
-                                    : "unset"), tableIconWrapperClassName: tableIconWrapperClassName }))))); }),
+                                    : "unset"), tableIconWrapperClassName: tableIconWrapperClassName })))))),
                     rowActions && a$6.createElement(TableHeaderCell, { style: { textAlign: "right" } }))),
-            a$6.createElement(TableBody, { className: tableBodyClassName }, data.map(function (rowData, rowIndex) { return (a$6.createElement(a$6.Fragment, { key: rowIndex },
-                a$6.createElement(TableRow, { className: "duma-table__body-row ".concat(onRowClick ? "duma-table__body-row--clickable" : "", " ").concat(tableBodyRowClassName), onClick: function () {
+            a$6.createElement(TableBody, { className: tableBodyClassName }, data.map((rowData, rowIndex) => (a$6.createElement(a$6.Fragment, { key: rowIndex },
+                a$6.createElement(TableRow, { className: `duma-table__body-row ${onRowClick ? "duma-table__body-row--clickable" : ""} ${tableBodyRowClassName}`, onClick: () => {
                         onRowClick === null || onRowClick === void 0 ? void 0 : onRowClick(rowData);
                         if (expandableContent)
                             toggleExpandRow(rowIndex);
-                    }, onContextMenu: function (e) { return openContextMenu(e, rowData); } },
+                    }, onContextMenu: (e) => openContextMenu(e, rowData) },
                     expandableContent && (a$6.createElement(TableDataCell, null,
-                        a$6.createElement("span", { onClick: function (e) {
+                        a$6.createElement("span", { onClick: (e) => {
                                 e.stopPropagation();
                                 toggleExpandRow(rowIndex);
                             } },
                             expandedRows.has(rowIndex) ? a$6.createElement(I, null) : a$6.createElement(D$1, null),
                             " "))),
-                    columns.map(function (column, colIndex) { return (a$6.createElement(TableDataCell, { key: colIndex, style: {
+                    columns.map((column, colIndex) => (a$6.createElement(TableDataCell, { key: colIndex, style: {
                             textAlign: column.props.justify || "left",
                             width: typeof column.props.width === "number"
-                                ? "".concat(column.props.width, "px")
+                                ? `${column.props.width}px`
                                 : "auto",
                         } }, column.props.render(column.props.name === "index" ||
                         column.props.name === "checkbox"
                         ? rowIndex
-                        : column.props.valueSelector(rowData)))); }),
+                        : column.props.valueSelector(rowData))))),
                     rowActions && (a$6.createElement(TableDataCell, { style: { textAlign: "right" } }, rowActions(rowData)))),
                 expandedRows.has(rowIndex) && (a$6.createElement(TableRow, null,
-                    a$6.createElement(TableDataCell, { className: "duma-table__expandable ".concat(tableExpandableClassName), colSpan: columns.length + 2 }, expandableContent === null || expandableContent === void 0 ? void 0 :
+                    a$6.createElement(TableDataCell, { className: `duma-table__expandable ${tableExpandableClassName}`, colSpan: columns.length + 2 }, expandableContent === null || expandableContent === void 0 ? void 0 :
                         expandableContent(rowData),
-                        " "))))); }))),
+                        " ")))))))),
         contextMenu.position &&
             contextComponent &&
             contextMenu.data && ( // Proveravamo da li postoji data pre prikaza
         a$6.createElement("div", { ref: menuRef, style: {
                 position: "fixed",
-                top: (_b = contextMenu.position) === null || _b === void 0 ? void 0 : _b.y,
-                left: (_c = contextMenu.position) === null || _c === void 0 ? void 0 : _c.x,
+                top: (_a = contextMenu.position) === null || _a === void 0 ? void 0 : _a.y,
+                left: (_b = contextMenu.position) === null || _b === void 0 ? void 0 : _b.x,
                 zIndex: 1000,
                 whiteSpace: "nowrap",
             }, onClick: closeContextMenu }, contextComponent(contextMenu.data, contextMenu.position)))));
 };
-var sortingIcons = {
+const sortingIcons = {
     asc: a$6.createElement(D$1, null),
     desc: a$6.createElement(I, null),
     unset: a$6.createElement(D, null),
 };
-BaseTable.SortButton = function (_a) {
-    var sorting = _a.sorting, tableIconWrapperClassName = _a.tableIconWrapperClassName;
-    return (a$6.createElement("div", { className: "duma-table__sort-icon--wrapper ".concat(tableIconWrapperClassName) }, sortingIcons[sorting]));
-};
+BaseTable.SortButton = ({ sorting, tableIconWrapperClassName, }) => (a$6.createElement("div", { className: `duma-table__sort-icon--wrapper ${tableIconWrapperClassName}` }, sortingIcons[sorting]));
 
 exports.BaseTable = BaseTable;
 exports.TableColumn = TableColumn;

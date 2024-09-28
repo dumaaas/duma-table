@@ -1,9 +1,9 @@
 
-# BaseTable Documentation
+# 🏗️ BaseTable Documentation
 
 This documentation describes how to use the `BaseTable` component, a flexible and highly customizable table component that supports features such as sorting, row selection, expandable rows, and context menus. It is built with React and TypeScript and includes support for dynamic data.
 
-## Table of Contents
+## 📖 Table of Contents
 1. [Installation](#installation)
 2. [Props Overview](#props-overview)
 3. [Features](#features)
@@ -13,10 +13,11 @@ This documentation describes how to use the `BaseTable` component, a flexible an
     - [Context Menu](#context-menu)
     - [Row Actions](#row-actions)
 4. [Usage Examples](#usage-examples)
+5. [Custom Styling](#custom-styling)
 
 ---
 
-## Installation
+## 🚀 Installation
 
 To install and use the `BaseTable` component, first install the necessary dependencies:
 
@@ -33,7 +34,7 @@ import 'duma-table/dist/styles.css';
 
 ---
 
-## Props Overview
+## 🧑‍💻 Props Overview
 
 ### `BaseTable` Component
 
@@ -44,127 +45,65 @@ import 'duma-table/dist/styles.css';
 | `children`              | `React.ReactElement<TableColumnProps<TData, unknown>>[]`         | Yes      | Defines the table columns, using `TableColumn`. |
 | `hasIndexColumn`        | `boolean`                                                       | No       | Whether to show an index column. |
 | `onRowClick`            | `(data: TData) => void`                                         | No       | Callback function when a row is clicked. |
-| `onSortChange`          | `(sort: SortString<TData>) => void`                             | No       | Callback when sorting is changed. |
-| `selectedRows`          | `TData[]`                                                       | No       | Array of currently selected rows. |
-| `onRowSelectionChange`  | `(selectedRows: TData[]) => void`                               | No       | Callback when selected rows are changed. |
-| `expandableContent`     | `(rowData: TData) => React.ReactNode`                           | No       | Function to render expandable content for a row. |
-| `rowActions`            | `(rowData: TData) => React.ReactNode`                           | No       | Function to render action buttons for a row. |
-| `contextComponent`      | `(rowData: TData, position: { x: number; y: number }) => React.ReactNode` | No | Custom component that appears on right-click (context menu). |
+| `onSortChange`          | `(sort: SortString<TData>) => void`                             | No       | Callback function when the sort order changes. |
+| `selectedRows`          | `TData[]`                                                       | No       | Tracks selected rows. |
+| `onRowSelectionChange`  | `(selectedRows: TData[]) => void`                               | No       | Callback when the selected rows change. |
+| `expandableContent`     | `(rowData: TData) => React.ReactNode`                           | No       | Renders expandable row content. |
+| `rowActions`            | `(rowData: TData) => React.ReactNode`                           | No       | Renders actions for each row. |
+
+### `TableColumn` Component
+
+| Prop Name     | Type                                                    | Required | Description |
+|---------------|---------------------------------------------------------|----------|-------------|
+| `name`        | `string`                                                | Yes      | Unique identifier for the column. |
+| `width`       | `number or "*" `                                          | Yes      | Specifies the column width. |
+| `label`       | `React.ReactNode`                                        | No       | The column header. |
+| `render`      | `(value?: TValue) => React.ReactNode`                   | Yes      | Function to render cell content. |
+| `valueSelector`| `(rowData: TDto) => TValue or undefined`                | Yes      | Function to extract the column value from a row. |
+| `sortable`    | `boolean`                                               | No       | If the column is sortable. |
+| `justify`     | `TableColumnJustify`                                    | No       | Justification for the column content. |
 
 ---
 
-## Features
+## 🎛️ Features
 
 ### Sorting
-
-The `BaseTable` supports column-based sorting. To enable sorting on a column, pass the `sortable` prop in the `TableColumn` definition. Sorting icons (like arrows) are used to display the sorting state.
-
-Example:
-
-```tsx
-<TableColumn
-  name="name"
-  label="Name"
-  sortable
-  valueSelector={(rowData) => rowData.name}
-  render={(value) => <span>{value}</span>}
-/>
-```
+Define which columns are sortable by setting the `sortable` prop on the `TableColumn`. You can manage sorting by passing the `sort` and `onSortChange` props to `BaseTable`.
 
 ### Row Selection
-
-To allow selecting rows, use the `selectedRows` prop and pass a callback for `onRowSelectionChange`. This will let you manage the selection of rows.
-
-Example:
-
-```tsx
-<BaseTable
-  data={data}
-  selectedRows={selectedRows}
-  onRowSelectionChange={setSelectedRows}
->
-  {/* Column definitions */}
-</BaseTable>
-```
+Enable row selection by providing the `selectedRows` and `onRowSelectionChange` props to `BaseTable`. This will display checkboxes for selecting rows.
 
 ### Expandable Rows
-
-You can define expandable rows by passing the `expandableContent` prop to the `BaseTable`. This will allow rows to be expanded or collapsed when clicked.
-
-Example:
-
-```tsx
-<BaseTable
-  data={data}
-  expandableContent={(rowData) => (
-    <div>
-      <strong>Details for {rowData.name}:</strong> {rowData.details}
-    </div>
-  )}
->
-  {/* Column definitions */}
-</BaseTable>
-```
+To make rows expandable, pass a function to the `expandableContent` prop. This function should return the JSX for the expanded row content.
 
 ### Context Menu
-
-To use a custom context menu that opens when right-clicking on a row, define a `contextComponent`. This component will be rendered at the position where the right-click happened.
-
-Example:
-
-```tsx
-<BaseTable
-  data={data}
-  contextComponent={(rowData, position) => (
-    <div style={{ position: 'fixed', top: position.y, left: position.x }}>
-      <button onClick={() => alert(`Action for ${rowData.name}`)}>Action</button>
-    </div>
-  )}
->
-  {/* Column definitions */}
-</BaseTable>
-```
+Right-clicking on a row can trigger a context menu. Define the menu content using the `contextComponent` prop.
 
 ### Row Actions
-
-To define custom row actions (like buttons for editing, deleting, etc.), pass a `rowActions` prop. This will render the provided component in each row.
-
-Example:
-
-```tsx
-<BaseTable
-  data={data}
-  rowActions={(rowData) => (
-    <div>
-      <button>Edit</button>
-      <button>Delete</button>
-    </div>
-  )}
->
-  {/* Column definitions */}
-</BaseTable>
-```
+You can define actions (e.g., edit, delete) for each row using the `rowActions` prop. This will display buttons or other interactive elements.
 
 ---
 
-## Usage Examples
+## 💡 Usage Examples
 
-### Basic Table Example
+### Table with Sorting and Row Selection
 
 ```tsx
-<BaseTable
+<BaseTable<TData>
   data={data}
   sort="name asc"
   onSortChange={(newSort) => setSort(newSort)}
+  selectedRows={selectedRows}
+  onRowSelectionChange={setSelectedRows}
 >
-  <TableColumn
+  <TableColumn<TData, string>
     name="name"
     label="Name"
     sortable
     valueSelector={(rowData) => rowData.name}
     render={(value) => <span>{value}</span>}
   />
-  <TableColumn
+  <TableColumn<TData, number>
     name="age"
     label="Age"
     valueSelector={(rowData) => rowData.age}
@@ -176,7 +115,7 @@ Example:
 ### Table with Expandable Rows
 
 ```tsx
-<BaseTable
+<BaseTable<TData>
   data={data}
   expandableContent={(rowData) => (
     <div>
@@ -188,51 +127,93 @@ Example:
     </div>
   )}
 >
-  <TableColumn
+  <TableColumn<TData, string>
     name="name"
     label="Name"
     valueSelector={(rowData) => rowData.name}
-    render={(value) => <span>{value}</span>}
-  />
-  <TableColumn
-    name="age"
-    label="Age"
-    valueSelector={(rowData) => rowData.age}
     render={(value) => <span>{value}</span>}
   />
 </BaseTable>
 ```
 
-### Table with Context Menu and Row Actions
+### Table with Row Actions
 
 ```tsx
-<BaseTable
+<BaseTable<TData>
   data={data}
-  contextComponent={(rowData, position) => (
-    <div style={{ position: 'fixed', top: position.y, left: position.x }}>
-      <button onClick={() => alert(`View details for ${rowData.name}`)}>View Details</button>
-      <button onClick={() => alert(`Delete ${rowData.name}`)}>Delete</button>
-    </div>
-  )}
   rowActions={(rowData) => (
     <div>
       <button onClick={() => alert(`Edit ${rowData.name}`)}>Edit</button>
+      <button onClick={() => alert(`Delete ${rowData.name}`)}>Delete</button>
     </div>
   )}
 >
-  <TableColumn
+  <TableColumn<TData, string>
     name="name"
     label="Name"
     valueSelector={(rowData) => rowData.name}
     render={(value) => <span>{value}</span>}
   />
-  <TableColumn
-    name="age"
-    label="Age"
-    valueSelector={(rowData) => rowData.age}
+</BaseTable>
+```
+
+### Table with Context Menu (No Positioning Props)
+
+```tsx
+<BaseTable<TData>
+  data={data}
+  contextComponent={(rowData) => (
+    <div>
+      <button onClick={() => alert(`View details for ${rowData.name}`)}>View Details</button>
+      <button onClick={() => alert(`Delete ${rowData.name}`)}>Delete</button>
+    </div>
+  )}
+>
+  <TableColumn<TData, string>
+    name="name"
+    label="Name"
+    valueSelector={(rowData) => rowData.name}
     render={(value) => <span>{value}</span>}
   />
 </BaseTable>
 ```
 
 ---
+
+## 🎨 Custom Styling
+
+You can easily apply custom styles to the table using the `tableClassName` prop on `BaseTable`. Additionally, each component supports `className` props for individual customization. This allows you to create entirely new styles as needed.
+
+For example:
+
+```css
+.custom-table {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.custom-table th {
+  color: #333;
+}
+
+.custom-table td {
+  padding: 12px;
+}
+```
+
+```tsx
+<BaseTable<TData>
+  data={data}
+  tableClassName="custom-table"
+>
+  <TableColumn<TData, string>
+    name="name"
+    label="Name"
+    valueSelector={(rowData) => rowData.name}
+    render={(value) => <span>{value}</span>}
+  />
+</BaseTable>
+```
+
+Enjoy styling your tables to suit your design! 🎉

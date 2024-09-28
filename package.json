@@ -1,6 +1,6 @@
 {
   "name": "duma-table",
-  "version": "1.0.10",
+  "version": "1.0.12",
   "description": "A flexible React table component with sorting, row selection, expandable rows, and context menu.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -29,7 +29,7 @@
     "sorting",
     "selection"
   ],
-  "homepage": "https://github.com/dumaaas/duma-table#readme",
+  "homepage": "https://generic-table.vercel.app/",
   "peerDependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
