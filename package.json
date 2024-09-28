@@ -1,6 +1,6 @@
 {
   "name": "duma-table",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "A flexible React table component with sorting, row selection, expandable rows, and context menu.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -13,12 +13,22 @@
     "build": "npm run build:css && rollup -c rollup.config.mjs",
     "prepare": "npm run build"
   },
-  "keywords": [],
   "author": "Marko Dumnic",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/dumaaas/duma-table/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dumaaas/duma-table.git"
+  },
+  "keywords": [
+    "react",
+    "table",
+    "data-grid",
+    "sorting",
+    "selection"
+  ],
   "homepage": "https://github.com/dumaaas/duma-table#readme",
   "peerDependencies": {
     "react": "^18.3.1",
