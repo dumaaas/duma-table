@@ -1,0 +1,79 @@
+.duma-table__table {
+  overflow: hidden;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 900px;
+  border-radius: 12px;
+}
+
+.duma-table__table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.duma-table__head-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.duma-table__head-title--sortable {
+  cursor: pointer;
+}
+
+.duma-table__head-title--sortable:hover {
+  color: #E0B0FF;
+}
+
+.duma-table__body-row {
+  background-color: white;
+}
+
+.duma-table__body-row:hover {
+  background-color: #E6E6FA;
+}
+
+.duma-table__body-row:nth-child(2n + 1) {
+  background-color: #f7f6fe;
+}
+
+.duma-table__body-row:nth-child(2n + 1):hover {
+  background-color: #E6E6FA;
+}
+
+.duma-table__body-row--clickable {
+  cursor: pointer;
+}
+
+.duma-table__expandable {
+  border-bottom: 1px solid black;
+}
+
+.duma-table__body {
+    width: 100%;
+}
+
+.duma-table__data-cell {
+    padding: 8px;
+}
+
+.duma-table__head {
+    width: 100%;
+    background-color: white;
+}
+
+.duma-table__header-cell {
+    padding: 8px;
+}
+
+.duma-table__row {
+    border-radius: 12px;
+    background-color: white;
+}
+
+.duma-table__sort-icon--wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
